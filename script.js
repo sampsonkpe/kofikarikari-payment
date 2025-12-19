@@ -14,13 +14,19 @@ const paypalBtn = document.getElementById('paypalBtn');
 const toast = document.getElementById('toast');
 const thankyouScreen = document.getElementById('thankyouScreen');
 const returnBtn = document.getElementById('returnBtn');
+const thankyouBackBtn = document.getElementById('thankyouBackBtn');
+let paymentCompleted = false;
+const heroLanding = document.getElementById('heroLanding');
 
 // ===== SMOOTH OVERLAY SHOW =====
 becomePartnerBtn.addEventListener('click', () => {
+  heroLanding.classList.add('hidden');
   paymentOverlay.classList.remove('hidden');
   
   setTimeout(() => {
     paymentOverlay.classList.add('show');
+    formStep.classList.remove('hidden');
+    optionsStep.classList.add('hidden');
   }, 10);
 });
 
@@ -50,13 +56,29 @@ partnershipForm.addEventListener('submit', (e) => {
   welcomeMsg.textContent = `Welcome, ${firstName}! Choose your payment method.`;
   
   formStep.classList.add('hidden');
-  optionsStep.classList.remove('hidden');
+  formStep.classList.add('fade-out');
+  
+  setTimeout(() => {
+    formStep.classList.add('hidden');
+    formStep.classList.remove('fade-out');
+
+    optionsStep.classList.remove('hidden');
+    optionsStep.classList.add('fade-in');
+    setTimeout(() => optionsStep.classList.remove('fade-in'), 500);
+  }, 500);
 });
 
 // ===== BACK BUTTON =====
 backBtn.addEventListener('click', () => {
-  optionsStep.classList.add('hidden');
-  formStep.classList.remove('hidden');
+  optionsStep.classList.add('fade-out');
+  setTimeout(() => {
+    optionsStep.classList.add('hidden');
+    optionsStep.classList.remove('fade-out');
+    
+    formStep.classList.remove('hidden');
+    formStep.classList.add('fade-in');
+    setTimeout(() => formStep.classList.remove('fade-in'), 500);
+  }, 500);
 });
 
 // ===== EMAIL VALIDATION =====
@@ -93,16 +115,21 @@ async function savePartnerData(paymentMethod) {
   }
 }
 
+function completePayment(paymentMethod) {
+  savePartnerData(paymentMethod);
+  showThankYouScreen();
+}
+
 // ===== COPY TO CLIPBOARD =====
 copyBtn.addEventListener('click', () => {
   const number = copyBtn.dataset.copy;
-  
+
   navigator.clipboard.writeText(number)
     .then(() => {
       showToast('MoMo number copied!');
+      setTimeout(() => completePayment('Mobile Money - Manual Transfer'), 1200);
     })
-    .catch(err => {
-      console.error('Copy failed:', err);
+    .catch(() => {
       showToast('Failed to copy. Please try again.');
     });
 });
@@ -111,13 +138,13 @@ copyBtn.addEventListener('click', () => {
 document.querySelectorAll('.btn-copy-inline').forEach(btn => {
   btn.addEventListener('click', () => {
     const textToCopy = btn.dataset.copy;
-    
+
     navigator.clipboard.writeText(textToCopy)
       .then(() => {
         showToast('Bank account details copied!');
+        setTimeout(() => completePayment('Bank Transfer'), 1200);
       })
-      .catch(err => {
-        console.error('Copy failed:', err);
+      .catch(() => {
         showToast('Failed to copy. Please try again.');
       });
   });
@@ -145,18 +172,20 @@ ussdOptions.forEach(option => {
     const ussdCode = option.dataset.ussd;
     ussdOverlay.classList.add('hidden');
     
-    savePartnerData('Mobile Money - USSD');
+    completePayment('Mobile Money - USSD');
     
     window.location.href = `tel:${ussdCode}`;
-    
-    showThankYouScreen();
   });
 });
 
 // ===== PAYPAL BUTTON =====
-paypalBtn.addEventListener('click', () => {
-  savePartnerData('PayPal');
-  showThankYouScreen();
+paypalBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  completePayment('PayPal');
+
+  setTimeout(() => {
+    window.open(paypalBtn.href, '_blank', 'noopener');
+  }, 300);
 });
 
 // ===== SHOW THANK YOU SCREEN =====
@@ -168,15 +197,36 @@ function showThankYouScreen() {
   thankyouScreen.classList.add('show');
 }
 
-// ===== RETURN TO HOME BUTTON =====
-returnBtn.addEventListener('click', () => {
-  thankyouScreen.classList.remove('show');
+// ===== THANK YOU BACK BUTTON =====
+thankyouBackBtn.addEventListener('click', () => {
+  thankyouScreen.classList.add('fade-out');
   setTimeout(() => {
     thankyouScreen.classList.add('hidden');
+    thankyouScreen.classList.remove('fade-out');
+
+    paymentOverlay.classList.remove('hidden');
+    paymentOverlay.classList.add('show');
+
+    optionsStep.classList.remove('hidden');
+    formStep.classList.add('hidden');
+
+    heroLanding.classList.add('hidden');
+  }, 500);
+});
+
+// ===== RETURN TO HOME BUTTON =====
+returnBtn.addEventListener('click', () => {
+  thankyouScreen.classList.add('fade-out');
+  setTimeout(() => {
+    thankyouScreen.classList.add('hidden');
+    thankyouScreen.classList.remove('fade-out');
+
     optionsStep.classList.add('hidden');
     formStep.classList.remove('hidden');
     partnershipForm.reset();
-  }, 700);
+
+    heroLanding.classList.remove('hidden'); // show landing
+  }, 500);
 });
 
 // ===== TOAST NOTIFICATION =====

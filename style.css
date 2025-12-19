@@ -525,6 +525,32 @@ body {
   max-width: 600px;
 }
 
+.thankyou-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-back-thankyou {
+  padding: 18px 40px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: transparent;
+  color: #666;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.5s ease;
+}
+
+.btn-back-thankyou:hover {
+  border-color: #D4A017;
+  color: #D4A017;
+  transform: translateY(-2px);
+}
+
 .thankyou-logo {
   width: 100px;
   height: auto;
@@ -646,6 +672,24 @@ body {
 
 .toast.show {
   opacity: 1;
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
+
+.fade-out {
+  opacity: 1;
+  animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; }
 }
 
 /* ===== MOBILE RESPONSIVE ===== */

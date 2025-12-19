@@ -5,20 +5,20 @@ const formStep = document.getElementById('formStep');
 const optionsStep = document.getElementById('optionsStep');
 const partnershipForm = document.getElementById('partnershipForm');
 const welcomeMsg = document.getElementById('welcomeMsg');
-const backBtn = document.getElementById('backBtn');
+const backBtn = document.querySelector('.btn-back');
 const ussdBtn = document.getElementById('ussdBtn');
 const ussdOverlay = document.getElementById('ussdOverlay');
 const ussdOptions = document.querySelectorAll('.ussd-option');
-const copyBtn = document.querySelector('.btn-copy');
+const copyBtns = document.querySelectorAll('.btn-copy');
+const copyInlineBtns = document.querySelectorAll('.btn-copy-inline');
 const paypalBtn = document.getElementById('paypalBtn');
 const toast = document.getElementById('toast');
 const thankyouScreen = document.getElementById('thankyouScreen');
 const returnBtn = document.getElementById('returnBtn');
 const thankyouBackBtn = document.getElementById('thankyouBackBtn');
-let paymentCompleted = false;
 const heroLanding = document.getElementById('heroLanding');
 
-// ===== SMOOTH OVERLAY SHOW =====
+// ===== SHOW PAYMENT OVERLAY =====
 becomePartnerBtn.addEventListener('click', () => {
   heroLanding.classList.add('hidden');
   paymentOverlay.classList.remove('hidden');
@@ -55,9 +55,7 @@ partnershipForm.addEventListener('submit', (e) => {
   const firstName = fullName.split(' ')[0];
   welcomeMsg.textContent = `Welcome, ${firstName}! Choose your payment method.`;
   
-  formStep.classList.add('hidden');
   formStep.classList.add('fade-out');
-  
   setTimeout(() => {
     formStep.classList.add('hidden');
     formStep.classList.remove('fade-out');
@@ -83,11 +81,10 @@ backBtn.addEventListener('click', () => {
 
 // ===== EMAIL VALIDATION =====
 function isValidEmail(email) {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// ===== SAVE PARTNER DATA TO GOOGLE SHEETS =====
+// ===== SAVE PARTNER DATA =====
 async function savePartnerData(paymentMethod) {
   const fullName = sessionStorage.getItem('partnerName');
   const email = sessionStorage.getItem('partnerEmail');
@@ -99,15 +96,8 @@ async function savePartnerData(paymentMethod) {
     await fetch(scriptURL, {
       method: 'POST',
       mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        fullName,
-        email,
-        phone,
-        paymentMethod
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fullName, email, phone, paymentMethod })
     });
     console.log('Data saved successfully');
   } catch (error) {
@@ -115,77 +105,72 @@ async function savePartnerData(paymentMethod) {
   }
 }
 
+// ===== COMPLETE PAYMENT =====
 function completePayment(paymentMethod) {
   savePartnerData(paymentMethod);
   showThankYouScreen();
 }
 
-// ===== COPY TO CLIPBOARD =====
-copyBtn.addEventListener('click', () => {
-  const number = copyBtn.dataset.copy;
-
-  navigator.clipboard.writeText(number)
-    .then(() => {
-      showToast('MoMo number copied!');
-      setTimeout(() => completePayment('Mobile Money - Manual Transfer'), 1200);
-    })
-    .catch(() => {
-      showToast('Failed to copy. Please try again.');
-    });
+// ===== COPY BUTTONS =====
+copyBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const number = btn.dataset.copy;
+    navigator.clipboard.writeText(number)
+      .then(() => {
+        showToast('MoMo number copied!');
+        setTimeout(() => completePayment('Mobile Money - Manual Transfer'), 1200);
+      })
+      .catch(() => showToast('Failed to copy. Please try again.'));
+  });
 });
 
-// ===== COPY BANK DETAILS =====
-document.querySelectorAll('.btn-copy-inline').forEach(btn => {
+copyInlineBtns.forEach(btn => {
   btn.addEventListener('click', () => {
-    const textToCopy = btn.dataset.copy;
-
-    navigator.clipboard.writeText(textToCopy)
+    const text = btn.dataset.copy;
+    navigator.clipboard.writeText(text)
       .then(() => {
         showToast('Bank account details copied!');
         setTimeout(() => completePayment('Bank Transfer'), 1200);
       })
-      .catch(() => {
-        showToast('Failed to copy. Please try again.');
-      });
+      .catch(() => showToast('Failed to copy. Please try again.'));
   });
 });
 
 // ===== USSD MODAL =====
-ussdBtn.addEventListener('click', () => {
-  ussdOverlay.classList.remove('hidden');
+ussdBtn.addEventListener('click', () => ussdOverlay.classList.remove('hidden'));
+
+ussdOverlay.addEventListener('click', e => {
+  if (e.target === ussdOverlay) ussdOverlay.classList.add('hidden');
 });
 
-ussdOverlay.addEventListener('click', (e) => {
-  if (e.target === ussdOverlay) {
-    ussdOverlay.classList.add('hidden');
-  }
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    ussdOverlay.classList.add('hidden');
-  }
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') ussdOverlay.classList.add('hidden');
 });
 
 ussdOptions.forEach(option => {
-  option.addEventListener('click', () => {
+  option.addEventListener('click', e => {
+    e.stopPropagation();
     const ussdCode = option.dataset.ussd;
+    
+    navigator.clipboard.writeText(ussdCode)
+      .then(() => showToast(`USSD code copied: ${ussdCode}`))
+      .catch(() => showToast('Failed to copy USSD code'));
+    
     ussdOverlay.classList.add('hidden');
     
-    completePayment('Mobile Money - USSD');
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      window.location.href = `tel:${ussdCode}`;
+    }
     
-    window.location.href = `tel:${ussdCode}`;
+    completePayment('Mobile Money - USSD');
   });
 });
 
 // ===== PAYPAL BUTTON =====
-paypalBtn.addEventListener('click', (e) => {
+paypalBtn.addEventListener('click', e => {
   e.preventDefault();
   completePayment('PayPal');
-
-  setTimeout(() => {
-    window.open(paypalBtn.href, '_blank', 'noopener');
-  }, 300);
+  setTimeout(() => window.open(paypalBtn.href, '_blank', 'noopener'), 300);
 });
 
 // ===== SHOW THANK YOU SCREEN =====
@@ -225,7 +210,7 @@ returnBtn.addEventListener('click', () => {
     formStep.classList.remove('hidden');
     partnershipForm.reset();
 
-    heroLanding.classList.remove('hidden'); // show landing
+    heroLanding.classList.remove('hidden');
   }, 500);
 });
 
@@ -237,25 +222,16 @@ function showToast(message) {
   
   setTimeout(() => {
     toast.classList.remove('show');
-    setTimeout(() => {
-      toast.classList.add('hidden');
-    }, 300);
+    setTimeout(() => toast.classList.add('hidden'), 300);
   }, 3000);
 }
 
-// ===== PREVENT BODY SCROLL WHEN OVERLAY IS OPEN =====
+// ===== PREVENT BODY SCROLL WHEN OVERLAY OPEN =====
 const observer = new MutationObserver(() => {
-  if (paymentOverlay.classList.contains('show')) {
-    document.body.style.overflow = 'hidden';
-  } else {
-    document.body.style.overflow = '';
-  }
+  document.body.style.overflow = paymentOverlay.classList.contains('show') ? 'hidden' : '';
 });
 
-observer.observe(paymentOverlay, {
-  attributes: true,
-  attributeFilter: ['class']
-});
+observer.observe(paymentOverlay, { attributes: true, attributeFilter: ['class'] });
 
 // ===== INITIALIZE =====
 console.log('Kofi Karikari Ministries Payment Gateway Ready');

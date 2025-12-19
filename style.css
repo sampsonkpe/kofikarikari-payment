@@ -478,7 +478,7 @@ body {
 
 /* ===== BACK BUTTON ===== */
 .btn-back {
-  padding: 14px 40px;
+  padding: 16px 50px;
   font-size: 1rem;
   font-weight: 600;
   background: transparent;
@@ -488,9 +488,16 @@ body {
   cursor: pointer;
   font-family: 'Inter', sans-serif;
   transition: all 0.5s ease;
-  display: block;
-  margin: 0 auto;
-  margin-top: 10px;
+  display: inline-block;
+  text-align: center;
+  margin: 0;
+}
+
+.back-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
 }
 
 .btn-back:hover {
@@ -690,6 +697,24 @@ body {
 
 @keyframes fadeOut {
   to { opacity: 0; }
+}
+
+/* ===== UNIFIED BUTTON SIZE ===== */
+.btn-back,
+.btn-back-thankyou,
+.btn-copy,
+.btn-copy-inline,
+.btn-ussd,
+.btn-method,
+.btn-return {
+  padding: 14px 40px;
+  font-size: 1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  display: inline-block;
+  text-align: center;
 }
 
 /* ===== MOBILE RESPONSIVE ===== */

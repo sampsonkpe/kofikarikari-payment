@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner with Kofi Karikari Ministries</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="images/karikarilogo.png" type="image/png">
+</head>
+<body>
+
+  <!-- Hero Landing Section -->
+  <section class="hero-landing" id="heroLanding">
+    <!-- Background Image -->
+    <div class="hero-bg">
+      <img src="images/image.jpg" alt="Kofi Karikari" id="heroImage">
+    </div>
+    
+    <!-- Hero Content -->
+    <div class="hero-overlay"></div>
+    <div class="hero-content-wrapper">
+      <div class="hero-text-content">
+        <h1 class="main-title" id="mainTitle">Partner with Kofi Karikari Ministries</h1>
+        <p class="main-subtitle" id="mainSubtitle">Join us in making an eternal impact through faith, hope, and love.</p>
+        <button class="cta-main" id="becomePartnerBtn">Become a Partner</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Payment Overlay Card -->
+  <section class="payment-overlay hidden" id="paymentOverlay">
+    <div class="payment-card-wrapper">
+      
+      <!-- Form Step -->
+      <div class="payment-step form-step" id="formStep">
+        <div class="card-header">
+          <img src="images/karikarilogo.png" alt="Logo" class="card-logo">
+          <h2>Begin Your Partnership</h2>
+          <p>Enter your details to continue</p>
+        </div>
+        
+        <form id="partnershipForm" class="partner-form">
+          <div class="form-field">
+            <input type="text" id="fullName" placeholder="Full Name" required>
+          </div>
+          <div class="form-field">
+            <input type="email" id="email" placeholder="Email Address" required>
+          </div>
+          <div class="form-field">
+            <input type="tel" id="phone" placeholder="Phone Number (Optional)">
+          </div>
+          <button type="submit" class="btn-continue">Continue to Payment</button>
+        </form>
+      </div>
+
+      <!-- Payment Options Step -->
+      <div class="payment-step options-step hidden" id="optionsStep">
+        <div class="card-header">
+          <img src="images/karikarilogo.png" alt="Logo" class="card-logo">
+          <h2>Choose Payment Method</h2>
+          <p class="welcome-msg" id="welcomeMsg"></p>
+        </div>
+
+        <div class="payment-methods">
+          <!-- PayPal -->
+          <div class="method-card">
+            <div class="method-header">
+              <img src="images/paypal.png" alt="PayPal Logo" class="method-icon">
+              <div>
+                <h3>PayPal</h3>
+                <p>Secure international payments</p>
+              </div>
+            </div>
+            <a href="https://PayPal.me/kofikari" target="_blank" rel="noopener noreferrer" class="btn-method paypal" id="paypalBtn">
+              Pay via PayPal
+            </a>
+          </div>
+
+          <!-- Mobile Money -->
+          <div class="method-card">
+            <div class="method-header">
+              <img src="images/mtnmomo.png" alt="Mobile Money Logo" class="method-icon">
+              <div>
+                <h3>Mobile Money</h3>
+                <p>Fast local payments</p>
+              </div>
+            </div>
+            <div class="momo-details">
+              <p class="momo-label">MTN Mobile Money</p>
+              <p class="momo-num">0553440705</p>
+            </div>
+            <div class="method-actions">
+              <button class="btn-copy" data-copy="0553440705">Copy Number</button>
+              <button class="btn-ussd" id="ussdBtn">USSD</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-back" id="backBtn">← Back</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Impact Section (Shows after payment) -->
+  <section class="impact-section hidden" id="impactSection">
+    <div class="impact-container">
+      <h2>Your Partnership Makes a Difference</h2>
+      <p class="impact-description">
+        Every contribution helps us reach more lives, strengthen communities, 
+        and spread the message of hope across Ghana and beyond.
+      </p>
+      <div class="impact-grid">
+        <div class="impact-stat">
+          <h3>500+</h3>
+          <p>Lives Touched</p>
+        </div>
+        <div class="impact-stat">
+          <h3>10+</h3>
+          <p>Communities Served</p>
+        </div>
+        <div class="impact-stat">
+          <h3>3</h3>
+          <p>Years of Ministry</p>
+        </div>
+      </div>
+    </div>
+    
+    <footer class="footer">
+      <p>&copy; 2025 Kofi Karikari Ministries. All rights reserved.</p>
+    </footer>
+  </section>
+
+  <!-- USSD Modal -->
+  <div class="ussd-modal-overlay hidden" id="ussdOverlay">
+    <div class="ussd-modal">
+      <h3>Select Your Network</h3>
+      <div class="ussd-options">
+        <button class="ussd-option" data-ussd="*170#">MTN</button>
+        <button class="ussd-option" data-ussd="*110#">Telecel</button>
+        <button class="ussd-option" data-ussd="*110#">AirtelTigo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -12,12 +12,13 @@ const ussdOptions = document.querySelectorAll('.ussd-option');
 const copyBtn = document.querySelector('.btn-copy');
 const paypalBtn = document.getElementById('paypalBtn');
 const toast = document.getElementById('toast');
+const thankyouScreen = document.getElementById('thankyouScreen');
+const returnBtn = document.getElementById('returnBtn');
 
 // ===== SMOOTH OVERLAY SHOW =====
 becomePartnerBtn.addEventListener('click', () => {
   paymentOverlay.classList.remove('hidden');
   
-  // Trigger smooth fade-in and scale animation
   setTimeout(() => {
     paymentOverlay.classList.add('show');
   }, 10);
@@ -31,7 +32,6 @@ partnershipForm.addEventListener('submit', (e) => {
   const email = document.getElementById('email').value.trim();
   const phone = document.getElementById('phone').value.trim();
   
-  // Validation
   if (!fullName || !email) {
     showToast('Please fill in all required fields');
     return;
@@ -42,16 +42,13 @@ partnershipForm.addEventListener('submit', (e) => {
     return;
   }
   
-  // Store user data
   sessionStorage.setItem('partnerName', fullName);
   sessionStorage.setItem('partnerEmail', email);
   if (phone) sessionStorage.setItem('partnerPhone', phone);
   
-  // Show personalized welcome message
   const firstName = fullName.split(' ')[0];
   welcomeMsg.textContent = `Welcome, ${firstName}! Choose your payment method.`;
   
-  // Switch to payment options step
   formStep.classList.add('hidden');
   optionsStep.classList.remove('hidden');
 });
@@ -68,13 +65,41 @@ function isValidEmail(email) {
   return regex.test(email);
 }
 
+// ===== SAVE PARTNER DATA TO GOOGLE SHEETS =====
+async function savePartnerData(paymentMethod) {
+  const fullName = sessionStorage.getItem('partnerName');
+  const email = sessionStorage.getItem('partnerEmail');
+  const phone = sessionStorage.getItem('partnerPhone') || '';
+  
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbzrdMz_sx8too5CiMHueD8XofkhL3KL0swU19ULTVrPcxYnAHuOpDQ07bsx7b_BMo6x/exec';
+  
+  try {
+    await fetch(scriptURL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fullName,
+        email,
+        phone,
+        paymentMethod
+      })
+    });
+    console.log('Data saved successfully');
+  } catch (error) {
+    console.error('Error saving data:', error);
+  }
+}
+
 // ===== COPY TO CLIPBOARD =====
 copyBtn.addEventListener('click', () => {
   const number = copyBtn.dataset.copy;
   
   navigator.clipboard.writeText(number)
     .then(() => {
-      showToast('Mobile Money number copied!');
+      showToast('MoMo number copied!');
     })
     .catch(err => {
       console.error('Copy failed:', err);
@@ -82,65 +107,77 @@ copyBtn.addEventListener('click', () => {
     });
 });
 
+// ===== COPY BANK DETAILS =====
+document.querySelectorAll('.btn-copy-inline').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const textToCopy = btn.dataset.copy;
+    
+    navigator.clipboard.writeText(textToCopy)
+      .then(() => {
+        showToast('Bank account details copied!');
+      })
+      .catch(err => {
+        console.error('Copy failed:', err);
+        showToast('Failed to copy. Please try again.');
+      });
+  });
+});
+
 // ===== USSD MODAL =====
 ussdBtn.addEventListener('click', () => {
   ussdOverlay.classList.remove('hidden');
 });
 
-// Close USSD overlay when clicking outside
 ussdOverlay.addEventListener('click', (e) => {
   if (e.target === ussdOverlay) {
     ussdOverlay.classList.add('hidden');
   }
 });
 
-// Close USSD overlay on ESC key
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     ussdOverlay.classList.add('hidden');
   }
 });
 
-// USSD option selection
 ussdOptions.forEach(option => {
   option.addEventListener('click', () => {
     const ussdCode = option.dataset.ussd;
     ussdOverlay.classList.add('hidden');
     
-    showToast('Initiating USSD dial...');
+    savePartnerData('Mobile Money - USSD');
     
-    setTimeout(() => {
-      window.location.href = `tel:${ussdCode}`;
-    }, 500);
+    window.location.href = `tel:${ussdCode}`;
     
-    // Close payment overlay after USSD interaction
-    setTimeout(() => {
-      closePaymentOverlay();
-    }, 2000);
+    showThankYouScreen();
   });
 });
 
-// ===== PAYPAL BUTTON - Close After Click =====
+// ===== PAYPAL BUTTON =====
 paypalBtn.addEventListener('click', () => {
-  showToast('Redirecting to PayPal...');
-  
-  // Close overlay after brief delay
-  setTimeout(() => {
-    closePaymentOverlay();
-  }, 1500);
+  savePartnerData('PayPal');
+  showThankYouScreen();
 });
 
-// ===== CLOSE PAYMENT OVERLAY AFTER PAYMENT =====
-function closePaymentOverlay() {
-  // Hide payment overlay with smooth fade
+// ===== SHOW THANK YOU SCREEN =====
+function showThankYouScreen() {
   paymentOverlay.classList.remove('show');
-  setTimeout(() => {
-    paymentOverlay.classList.add('hidden');
-  }, 500);
+  paymentOverlay.classList.add('hidden');
   
-  // Show success toast
-  showToast('Thank you for your partnership!');
+  thankyouScreen.classList.remove('hidden');
+  thankyouScreen.classList.add('show');
 }
+
+// ===== RETURN TO HOME BUTTON =====
+returnBtn.addEventListener('click', () => {
+  thankyouScreen.classList.remove('show');
+  setTimeout(() => {
+    thankyouScreen.classList.add('hidden');
+    optionsStep.classList.add('hidden');
+    formStep.classList.remove('hidden');
+    partnershipForm.reset();
+  }, 700);
+});
 
 // ===== TOAST NOTIFICATION =====
 function showToast(message) {

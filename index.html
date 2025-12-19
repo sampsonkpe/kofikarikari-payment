@@ -65,10 +65,11 @@
         </div>
 
         <div class="payment-methods">
+          
           <!-- PayPal -->
           <div class="method-card">
             <div class="method-header">
-              <img src="images/paypal.png" alt="PayPal Logo" class="method-icon">
+              <img src="images/paypal.png" alt="PayPal" class="method-icon">
               <div>
                 <h3>PayPal</h3>
                 <p>Secure international payments</p>
@@ -82,14 +83,14 @@
           <!-- Mobile Money -->
           <div class="method-card">
             <div class="method-header">
-              <img src="images/mtnmomo.png" alt="Mobile Money Logo" class="method-icon">
+              <img src="images/mtnmomo.png" alt="Mobile Money" class="method-icon">
               <div>
                 <h3>Mobile Money</h3>
                 <p>Fast local payments</p>
               </div>
             </div>
             <div class="momo-details">
-              <p class="momo-label">MTN Mobile Money</p>
+              <p class="momo-label">Kofi Karikari</p>
               <p class="momo-num">0553440705</p>
             </div>
             <div class="method-actions">
@@ -97,11 +98,54 @@
               <button class="btn-ussd" id="ussdBtn">USSD</button>
             </div>
           </div>
+
+          <!-- Ecobank -->
+          <div class="method-card">
+            <div class="method-header">
+              <img src="images/ecobank.png" alt="Ecobank" class="method-icon">
+              <div>
+                <h3>Bank Transfer</h3>
+                <p>Ecobank Tema Mall Branch</p>
+              </div>
+            </div>
+            <div class="bank-details">
+              <div class="bank-detail-item">
+                <p class="bank-label">Account Name</p>
+                <p class="bank-value">Kofi Karikari Ministries</p>
+              </div>
+              <div class="bank-detail-item">
+                <p class="bank-label">Cedi Account</p>
+                <p class="bank-value">1441002626099</p>
+                <button class="btn-copy-inline" data-copy="1441002626099">Copy</button>
+              </div>
+              <div class="bank-detail-item">
+                <p class="bank-label">Dollar Account</p>
+                <p class="bank-value">3441002217987</p>
+                <button class="btn-copy-inline" data-copy="3441002217987">Copy</button>
+              </div>
+              <div class="bank-detail-item">
+                <p class="bank-label">Swift Code</p>
+                <p class="bank-value">ECOCGHAC</p>
+                <button class="btn-copy-inline" data-copy="ECOCGHAC">Copy</button>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <button class="btn-back" id="backBtn">← Back</button>
       </div>
 
+    </div>
+  </section>
+
+  <!-- Thank You Screen -->
+  <section class="thankyou-screen hidden" id="thankyouScreen">
+    <div class="thankyou-content">
+      <img src="images/karikarilogo.png" alt="Logo" class="thankyou-logo">
+      <h1 class="thankyou-title">Thank You for Your Partnership!</h1>
+      <p class="thankyou-message">Your contribution makes an eternal impact. We'll be in touch soon.</p>
+      <button class="btn-return" id="returnBtn">Return to Home</button>
     </div>
   </section>
 

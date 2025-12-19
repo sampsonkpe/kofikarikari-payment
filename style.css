@@ -745,8 +745,15 @@ body {
     width: 100%;
   }
   
-  .btn-copy, .btn-ussd {
+  .btn-copy,
+  .btn-ussd,
+  .btn-copy-inline,
+  .btn-back,
+  .btn-back-thankyou,
+  .btn-return,
+  .btn-method {
     width: 100%;
+    margin-top: 10px;
   }
   
   .bank-detail-item {
@@ -759,9 +766,10 @@ body {
     margin-top: 5px;
   }
   
-  .btn-copy-inline {
+  .thankyou-actions {
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
-    margin-top: 8px;
   }
   
   .thankyou-title {

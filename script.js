@@ -1,5 +1,4 @@
 // ===== ELEMENTS =====
-const heroLanding = document.getElementById('heroLanding');
 const becomePartnerBtn = document.getElementById('becomePartnerBtn');
 const paymentOverlay = document.getElementById('paymentOverlay');
 const formStep = document.getElementById('formStep');
@@ -12,7 +11,6 @@ const ussdOverlay = document.getElementById('ussdOverlay');
 const ussdOptions = document.querySelectorAll('.ussd-option');
 const copyBtn = document.querySelector('.btn-copy');
 const paypalBtn = document.getElementById('paypalBtn');
-const impactSection = document.getElementById('impactSection');
 const toast = document.getElementById('toast');
 
 // ===== SMOOTH OVERLAY SHOW =====
@@ -115,42 +113,33 @@ ussdOptions.forEach(option => {
       window.location.href = `tel:${ussdCode}`;
     }, 500);
     
-    // Show impact section after USSD interaction
+    // Close payment overlay after USSD interaction
     setTimeout(() => {
-      showImpactSection();
+      closePaymentOverlay();
     }, 2000);
   });
 });
 
-// ===== PAYPAL BUTTON - Show Impact After Click =====
+// ===== PAYPAL BUTTON - Close After Click =====
 paypalBtn.addEventListener('click', () => {
   showToast('Redirecting to PayPal...');
   
-  // Show impact section after brief delay
+  // Close overlay after brief delay
   setTimeout(() => {
-    showImpactSection();
+    closePaymentOverlay();
   }, 1500);
 });
 
-// ===== SHOW IMPACT SECTION =====
-function showImpactSection() {
-  // Hide payment overlay
+// ===== CLOSE PAYMENT OVERLAY AFTER PAYMENT =====
+function closePaymentOverlay() {
+  // Hide payment overlay with smooth fade
   paymentOverlay.classList.remove('show');
   setTimeout(() => {
     paymentOverlay.classList.add('hidden');
   }, 500);
   
-  // Hide hero landing
-  heroLanding.style.display = 'none';
-  
-  // Show impact section with smooth animation
-  impactSection.classList.remove('hidden');
-  setTimeout(() => {
-    impactSection.classList.add('show');
-  }, 100);
-  
-  // Smooth scroll to top
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Show success toast
+  showToast('Thank you for your partnership!');
 }
 
 // ===== TOAST NOTIFICATION =====
@@ -182,4 +171,4 @@ observer.observe(paymentOverlay, {
 });
 
 // ===== INITIALIZE =====
-console.log('Kofi Karikari Ministries Payment Gateway Ready ✅');
+console.log('Kofi Karikari Ministries Payment Gateway Ready');

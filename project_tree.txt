@@ -1,0 +1,13 @@
+.
+├── images
+│   ├── ecobank.png
+│   ├── image.jpg
+│   ├── karikarilogo.png
+│   ├── mtnmomo.png
+│   └── paypal.png
+├── index.html
+├── project_tree.txt
+├── script.js
+└── style.css
+
+2 directories, 9 files
